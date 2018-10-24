@@ -30,10 +30,12 @@ library(knitr)
 ####################################################################################################
 
 # read in code for creating dataset
-source(file='H:\\Endocrinology\\Kelsey\\Kesley HIP study ISS puberty\\Ergui poster\\Data for models\\makedata.r')
+#source(file='H:\\Endocrinology\\Kelsey\\Kesley HIP study ISS puberty\\Ergui poster\\Data for models\\makedata.r')
+source(file='C:\\Users\\pylell\\Documents\\GitHub\\Kelsey-HIP\\makedata aim 1.r')
 
 # use Claire's functions
-source(file='H:\\R\\Markdown sample\\01_functions.r')
+#source(file='H:\\R\\Markdown sample\\01_functions.r')
+source(file='C:\\Users\\pylell\\Documents\\GitHub\\Functions\\01_functions.r')
 
 N <- nrow(distinct(wide,hip_id_screen))
 
