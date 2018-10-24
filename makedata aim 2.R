@@ -217,14 +217,14 @@ final <- final[!(final$hip_id_screen=="078-T" | final$hip_id_screen=="140-T" ),]
 dim(final)
 
 # remove those on metformin
-nomet <- final
-nomet <- nomet[!(final$Randomization.Group=="1") | is.na(final$Randomization.Group),]
+#nomet <- final
+#nomet <- nomet[!(final$Randomization.Group=="1") | is.na(final$Randomization.Group),]
 
 # delete visits with missing insulin sensitivity, secretion, and DI
-nomet <- nomet[!is.na(nomet$insulin_secretion_mm) & !is.na(nomet$insulin_sensitivity) & !is.na(nomet$disposition_index),]
+#nomet <- nomet[!is.na(nomet$insulin_secretion_mm) & !is.na(nomet$insulin_sensitivity) & !is.na(nomet$disposition_index),]
 
 # need to delete those with only one visit
-foranalysis <- nomet[nomet$hip_id_screen %in% names(table(nomet$hip_id_screen))[table(nomet$hip_id_screen) > 1],]
+foranalysis <- final[final$hip_id_screen %in% names(table(final$hip_id_screen))[table(final$hip_id_screen) > 1],]
 
 # add in baseline Tanner, race, sex
 #Read Data
@@ -440,9 +440,14 @@ write.csv(foranalysis,file="for_analysis.csv")
 
 # make a wide dataset
 keep <- c("hip_id_screen","date_of_study_visit","sv_num","insulin_sensitivity","insulin_secretion_mm",
-          "disposition_index","fat_percentage_dexa","bmi_cat_final.factor","sex.factor","race_eth","tanner")
+          "disposition_index","fat_percentage_dexa","bmi_cat_final.factor","sex.factor","race_eth","tanner",
+          "Randomization.Group","lept","adiponect_lv","tcholes_lv","hdl_lv","ldl_meth_lv","ldl_lv","tg_lv",
+          "crp_lv","fat_percentage_dexa","zscore_lv","alt","ast","dhea_s","wc_avg_lv","igf_lv")
 temp <- foranalysis[keep]
 wide <- reshape(temp, timevar="sv_num", idvar= c("hip_id_screen","bmi_cat_final.factor","sex.factor","race_eth","tanner"),direction="wide")
+
+
+BP
 
 # calculate deltas
 # use visit 3 as last visit
