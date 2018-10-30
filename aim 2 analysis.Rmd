@@ -31,30 +31,36 @@ library(knitr)
 #source(file='H:\\Endocrinology\\Kelsey\\Kesley HIP study ISS puberty\\Ergui poster\\Data for models\\makedata.r')
 source(file='C:\\Users\\pylell\\Documents\\GitHub\\Kelsey-HIP\\makedata aim 2.r')
 
+
 # use Claire's functions
 #source(file='H:\\R\\Markdown sample\\01_functions.r')
 source(file='C:\\Users\\pylell\\Documents\\GitHub\\Functions\\01_functions.r')
 
 N <- nrow(distinct(wide,hip_id_screen))
 
+# first comparison will be randomized kids only
+table(wide$Randomization.Group)
+rand <- wide[!is.na(wide$Randomization.Group),]
+rand$Randomization.Group <- as.factor(rand$Randomization.Group)
 
 
 ####################################################################################################
 #Unadjusted models #
 ####################################################################################################
 
-tab_unadjusted <- final_table(wide,c('delta_si','delta_inssec','delta_di'),group=wide$bmi_cat_final.factor,margin=2,single=0,ron=2)
+tab_unadjusted <- final_table(rand,c('delta_si','delta_inssec','delta_di'),group=rand$Randomization.Group,margin=2,single=F,ron=2)
 
 ####################################################################################################
 # Adjust for sex, Tanner, race #
 ####################################################################################################
 
-# need to fix reference group for race
-wide$race_eth <- relevel(as.factor(wide$race_eth),ref='NHW')
-adj2 <-lm(delta_si~bmi_cat_final.factor + sex.factor + as.factor(race_eth) + as.factor(tanner), wide)
+# need to fix reference group for race and treatment group
+# are there no NHW kids?
+rand$race_eth <- relevel(as.factor(rand$race_eth),ref='NHW')
+rand$Randomization.Group <- relevel(as.factor(rand$Randomization.Group),ref='2')
+adj2 <-lm(delta_si~Randomization.Group + as.factor(sex) + as.factor(race_eth) + as.factor(tanner), rand)
 tab2 <- mod_tab(adj2)
-tab2$Predictor <- c("Obese vs. Lean","Male vs. Female", "Asian vs. NHW","Black vs. NHW","Hispanic vs. NHW","Other race/ethnicity vs. NHW",
-                    "Tanner stage 3 vs. stage 2")
+tab2$Predictor <- c("Group - Met vs. Placebo","Male vs. Female", "Asian vs. NHW","Black vs. NHW","Hispanic vs. NHW","Other race/ethnicity vs. NHW","Tanner stage 3 vs. stage 2")
 
 adj3 <-lm(delta_inssec~bmi_cat_final.factor + sex.factor + as.factor(race_eth) + as.factor(tanner), wide)
 tab3 <- mod_tab(adj3)
