@@ -4,6 +4,7 @@ setwd("C:\\Temp\\Nashville trip\\Kesley HIP study ISS puberty\\Final dataset cle
 
 library(tidyr)
 library(reshape2)
+library(dplyr)
 
 #Clear existing data and graphics
 rm(list=ls())
@@ -453,12 +454,18 @@ keep <- c("hip_id_screen","date_of_study_visit","sv_num","insulin_sensitivity","
           "bp_systol_exam","bp_diastol_exam")
 temp <- foranalysis[keep]
 
-# getting strange results from reshape, different Ns depending what id vars are used
-wide <- reshape(temp, timevar="sv_num", idvar= c("hip_id_screen","bmi_cat_final"),direction="wide")
+wide <- reshape(temp, timevar="sv_num", idvar= c("hip_id_screen"),direction="wide")
 dim(wide)
-wide <- wide[-c("")]
-,"","sex","race_eth","tanner",
-"Randomization.Group"
+# rename baseline variables
+wide$bmi_cat_final <- wide$bmi_cat_final.1
+wide$sex <- wide$sex.1
+wide$race_eth <- wide$race_eth.1
+wide$tanner <- wide$tanner.1
+wide$Randomization.Group <- wide$Randomization.Group.1
+wide <- select(wide,-c("bmi_cat_final.1","bmi_cat_final.2","bmi_cat_final.3","bmi_cat_final.4","sex.1",
+                       "sex.2","sex.3","sex.4","race_eth.1","race_eth.2","race_eth.3","race_eth.4",
+                       "tanner.1","tanner.2","tanner.3","tanner.4","Randomization.Group.1",
+                       "Randomization.Group.2","Randomization.Group.3","Randomization.Group.4"))
 
 # calculate deltas
 # use visit 3 as last visit
@@ -476,47 +483,19 @@ dim(wide)
 wide <- wide[!is.na(wide$delta_di) & !is.na(wide$delta_inssec) & !is.na(wide$delta_di),]
 dim(wide)
 
+# delete those who were not randomized
+#dim(wide)
+#wide <- wide[!is.na(wide$Randomization.Group),]
+#dim(wide)
+
+#delete normal weight kids
+wide <- wide[wide$bmi_cat_final=="Obese",]
+
 # set labels
 label(wide$delta_di)="Change in DI"
 label(wide$delta_inssec)="Change in insulin secretion"
 label(wide$delta_si)="Change in insulin sensitivity"
 label(wide$delta_bodyfat)="Change in percent body fat"
 
-# add baseline predictors to wide dataset
-# need to make sure only visit 1
-base <- c("hip_id_screen","redcap_event_name","lept","adiponect_lv","fat_percentage_dexa",
-          "crp_lv","tg_lv","hdl_lv", "mets","dhea_s","igf_lv","gluc_0_iv","hba")
-base <- foranalysis[base]
-base <- base[base$redcap_event_name=="ivgtt_visit_1_arm_1" | base$redcap_event_name=="ivgtt_visit_1_arm_2",]
-#  now get rid of redcap event name
-base <- base[,-2]
-# calculate tg:HDL
-base$tg_hdl <- base$tg_lv/base$hdl_lv   
 
-# merge family hx with base
-dim(base)
-base <- merge(base,famhx,by=c("hip_id_screen"),all.x=TRUE, all.y=FALSE)
-dim(base)
-colnames(base) <- c("hip_id_screen","lept0","adipo0","fat_perc0","crp0","tg0","hdl0","mets0","dheas0","igf0","gluc00","hba1c0","tg_hdl0","famhxt2d0")
-
-# merge base with wide
-dim(wide)
-wide <- merge(wide,base,by="hip_id_screen",all.x=TRUE, all.y=FALSE)
-dim(wide)
-
-wide$lept0 <- as.numeric(wide$lept0)
-wide$crp0 <- as.numeric(wide$crp0)
-label(wide$lept0)="Baseline leptin"
-label(wide$adipo0)="Baseline adiponectin"
-label(wide$fat_perc0)="Baseline % fat"
-label(wide$crp0)="Baseline CRP"
-label(wide$tg0)="Baseline TG"
-label(wide$hdl0)="Baseline HDL"
-label(wide$mets0)="Baseline mets"
-label(wide$dheas0)="Baseline DHEAS"
-label(wide$igf0)="Baseline IGF"
-label(wide$gluc00)="Baseline fasting glucose"
-label(wide$hba1c0)="Baseline HbA1c"
-label(wide$tg_hdl0)="Baseline HDL"
-label(wide$famhxt2d0)="Family history T2D"
 
