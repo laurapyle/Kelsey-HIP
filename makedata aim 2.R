@@ -86,7 +86,7 @@ label(data$ins_120_iv)="120 minute insulin"
 label(data$ins_140_iv)="140 minute insulin"
 label(data$ins_160_iv)="160 minute insulin"
 label(data$ins_180_iv)="180 minute insulin"
-label(data$study_visit_adult_core_labs_complete)="Complete?"
+#label(data$study_visit_adult_core_labs_complete)="Complete?"
 label(data$dt_of_study_visit)="Date of Study Visit "
 label(data$sv_num)="Study Visit Number"
 label(data$ast)="AST"
@@ -94,7 +94,7 @@ label(data$alt)="ALT"
 label(data$crp_lv)="CRP"
 label(data$igf_lv)="IGF-1"
 label(data$hba)="HbA1c"
-label(data$study_visit_other_labs_complete)="Complete?"
+#label(data$study_visit_other_labs_complete)="Complete?"
 label(data$dov_lv)="Date of Study Visit "
 label(data$study_visit_number)="Study Visit Number"
 label(data$urine_sv)="Was a urine sample collected at this visit? "
@@ -208,8 +208,7 @@ rand <- read.csv("C:\\Temp\\Nashville trip\\Kesley HIP study ISS puberty\\Ergui 
 names(rand)[1] <- "hip_id_screen"
 final <- merge(data,rand,by=c("hip_id_screen"),all.x=TRUE, all.y=TRUE)
 check <- c("hip_id_screen","Randomization.Group","redcap_event_name")
-final[check]
-dim(final)
+
 
 #add leading zeroes to some IDs
 final$hip_id_screen <- as.character(final$hip_id_screen)
@@ -414,8 +413,8 @@ foranalysis$sibhx[foranalysis$sib_no >= 1 & foranalysis$sib_1_history_sv=="No" &
                     (foranalysis$sb4_history_screen=="No" | is.na(foranalysis$sb4_history_screen)) &
                     (foranalysis$sb5_history_screen=="No" | is.na(foranalysis$sb5_history_screen)) 
                     ] <- NA
-View(foranalysis[c("sib_no","sib_1_history_sv","sb2_history_screen","type2_db_sb1_screen",
-                   "type2_db_sb2_screen","sibhx","parhx","famhxt2d")])
+#View(foranalysis[c("sib_no","sib_1_history_sv","sb2_history_screen","type2_db_sb1_screen",
+                #   "type2_db_sb2_screen","sibhx","parhx","famhxt2d")])
 # at least one sibling and all negative
 foranalysis$sibhx[foranalysis$sib_no>=1 & 
                     (foranalysis$type2_db_sb1_screen=="No" | is.na(foranalysis$type2_db_sb1_screen)) &
@@ -446,12 +445,11 @@ famhx <- foranalysis[foranalysis$redcap_event_name.factor=="IVGTT Visit 1 (Arm 1
 write.csv(foranalysis,file="for_analysis.csv", na="")
 
 # make a wide dataset
-# STILL NOT FINDING ALL THESE VARIABLES
 keep <- c("hip_id_screen","date_of_study_visit","sv_num","insulin_sensitivity","insulin_secretion_mm",
           "disposition_index","fat_percentage_dexa","bmi_cat_final","sex","race_eth","tanner",
           "Randomization.Group","lept","adiponect_lv","tcholes_lv","hdl_lv","ldl_meth_lv","ldl_lv","tg_lv",
           "crp_lv","fat_percentage_dexa","zscore_lv","alt","ast","dhea_s","wc_avg_lv","igf_lv",
-          "bp_systol_exam","bp_diastol_exam")
+          "bp_systol_exam","bp_diastol_exam","famhxt2d","BMI","date_of_study_visit","dob")
 temp <- foranalysis[keep]
 
 wide <- reshape(temp, timevar="sv_num", idvar= c("hip_id_screen"),direction="wide")
@@ -462,10 +460,19 @@ wide$sex <- wide$sex.1
 wide$race_eth <- wide$race_eth.1
 wide$tanner <- wide$tanner.1
 wide$Randomization.Group <- wide$Randomization.Group.1
+wide$famhxt2d <- wide$famhxt2d.1
+wide$base_bmi <- wide$BMI.1
+wide$baseline_date <- wide$date_of_study_visit.1
+wide$dob <- wide$dob.1
+
 wide <- select(wide,-c("bmi_cat_final.1","bmi_cat_final.2","bmi_cat_final.3","bmi_cat_final.4","sex.1",
                        "sex.2","sex.3","sex.4","race_eth.1","race_eth.2","race_eth.3","race_eth.4",
                        "tanner.1","tanner.2","tanner.3","tanner.4","Randomization.Group.1",
-                       "Randomization.Group.2","Randomization.Group.3","Randomization.Group.4"))
+                       "Randomization.Group.2","Randomization.Group.3","Randomization.Group.4",
+                       "famhxt2d.1","famhxt2d.2","famhxt2d.3","famhxt2d.4","BMI.1","BMI.2","BMI.3","BMI.4",
+                       "date_of_study_visit.1","date_of_study_visit.2","date_of_study_visit.3","date_of_study_visit.4",
+                       "date_of_study_visit.1.1","date_of_study_visit.1.2","date_of_study_visit.1.3","date_of_study_visit.1.4",
+                       "dob.1","dob.2","dob.3","dob.4"))
 
 # calculate deltas
 # use visit 3 as last visit
@@ -477,6 +484,8 @@ wide$delta_di[nchar(wide$hip_id_screen)==5] <- wide$disposition_index.3[nchar(wi
 wide$delta_di[nchar(wide$hip_id_screen)!=5] <- wide$disposition_index.3[nchar(wide$hip_id_screen)!=5] - wide$disposition_index.1[nchar(wide$hip_id_screen)!=5]
 wide$delta_bodyfat[nchar(wide$hip_id_screen)==5] <- wide$fat_percentage_dexa.3[nchar(wide$hip_id_screen)==5] - wide$fat_percentage_dexa.1[nchar(wide$hip_id_screen)==5]
 wide$delta_bodyfat[nchar(wide$hip_id_screen)!=5] <- wide$fat_percentage_dexa.3[nchar(wide$hip_id_screen)!=5] - wide$fat_percentage_dexa.1[nchar(wide$hip_id_screen)!=5]
+
+wide <- select(wide,-c("fat_percentage_dexa.1.1","fat_percentage_dexa.1.2","fat_percentage_dexa.1.3","fat_percentage_dexa.1.4"))
 
 # delete people with missing delta Si, insulin secretion or DI
 dim(wide)
@@ -497,6 +506,9 @@ label(wide$delta_inssec)="Change in insulin secretion"
 label(wide$delta_si)="Change in insulin sensitivity"
 label(wide$delta_bodyfat)="Change in percent body fat"
 
-
+# calculate age
+wide$dob <- as_date(wide$dob)
+wide$temp<- as.Date(wide$baseline_date,format = "%m/%d/%Y")
+wide$age_base <- as.numeric(floor(difftime(wide$temp,wide$dob,units="weeks")/52))
 
 
