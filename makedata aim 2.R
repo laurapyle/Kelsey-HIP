@@ -5,6 +5,7 @@ setwd("C:\\Temp\\Nashville trip\\Kesley HIP study ISS puberty\\Final dataset cle
 library(tidyr)
 library(reshape2)
 library(dplyr)
+library(pracma)
 
 #Clear existing data and graphics
 rm(list=ls())
@@ -310,8 +311,8 @@ foranalysis$race_eth[is.na(foranalysis$race_eth)] <- "Other"
 racevars <- c("sumrace","ethnicity.factor","race___1","race___2","race___3","race___4","race___5","race_eth")
 
 # combine Tanner
-foranalysis$tanner[foranalysis$sex=="0 Female"] <- foranalysis$tanner_breast_exam[foranalysis$sex=="0 Female"]
-foranalysis$tanner[foranalysis$sex=="1 Male"] <- foranalysis$tanner_testis_vol_exam[foranalysis$sex=="1 Male"]
+foranalysis$tanner[foranalysis$sex=="0 Female"] <- levels(foranalysis$tanner_breast_exam)[foranalysis$tanner_breast_exam[foranalysis$sex=="0 Female"]]
+foranalysis$tanner[foranalysis$sex=="1 Male"] <- levels(foranalysis$tanner_testis_vol_exam)[foranalysis$tanner_testis_vol_exam[foranalysis$sex=="1 Male"]]
 tannervars <- c("sex","tanner_breast_exam","tanner_testis_vol_exam","tanner")
 
 # add famhx
