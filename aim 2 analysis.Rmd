@@ -22,6 +22,7 @@ library(devtools)
 library(Hmisc)
 library(knitr)
 library(lsmeans)
+library(broom)
 
 ####################################################################################################
 #Data Manipulation #
@@ -36,7 +37,6 @@ source(file='C:\\Users\\pylell\\Documents\\GitHub\\Kelsey-HIP\\makedata aim 2.r'
 #source(file='H:\\R\\Markdown sample\\01_functions.r')
 source(file='C:\\Users\\pylell\\Documents\\GitHub\\Functions\\01_functions.r')
 
-N <- nrow(distinct(wide,hip_id_screen))
 
 # first comparison will be randomized kids only
 rand <- wide[!is.na(wide$Randomization.Group),]
@@ -86,6 +86,9 @@ label(rand$famhxt2d)="Family Hx T2D"
 label(rand$base_bmi)="Baseline BMI"
 label(rand$race_eth)="Race/ethnicity"
 label(rand$age_base)="Age at baseline"
+
+N <- nrow(rand)
+
 ####################################################################################################
 #Table 1 #
 ####################################################################################################
@@ -108,16 +111,22 @@ names(tab_unadjusted) <- c("Characteristic","All (n=23)","Placebo (n=12)","Metfo
 
 adj2 <-lm(delta_si~Randomization.Group + as.factor(sex) + as.factor(race_eth) + as.factor(tanner), rand)
 tab2.lsmeans.group <- lsmeans(adj2,"Randomization.Group")
+tab2.lsmeans.group <- tidy(tab2.lsmeans.group)
+tab2.lsmeans.group$Randomization.Group <- c("Placebo","Metformin")
 tab2 <- mod_tab(adj2)
 tab2$Predictor <- c("Group - Met vs. Placebo","Male vs. Female", "Black vs. Hispanic","Native American vs. Hispanic","Other race/ethnicity vs. Hispanic","Tanner stage 3 vs. stage 2")
 
 adj3 <-lm(delta_inssec~Randomization.Group + as.factor(sex) + as.factor(race_eth) + as.factor(tanner), rand)
 tab3.lsmeans.group <- lsmeans(adj3,"Randomization.Group")
+tab3.lsmeans.group <- tidy(tab3.lsmeans.group)
+tab3.lsmeans.group$Randomization.Group <- c("Placebo","Metformin")
 tab3 <- mod_tab(adj3)
 tab3$Predictor <- c("Group - Met vs. Placebo","Male vs. Female", "Black vs. Hispanic","Native American vs. Hispanic","Other race/ethnicity vs. Hispanic","Tanner stage 3 vs. stage 2")
 
 adj4 <-lm(delta_di~Randomization.Group + as.factor(sex) + as.factor(race_eth) + as.factor(tanner), rand)
 tab4.lsmeans.group <- lsmeans(adj4,"Randomization.Group")
+tab4.lsmeans.group <- tidy(tab4.lsmeans.group)
+tab4.lsmeans.group$Randomization.Group <- c("Placebo","Metformin")
 tab4 <- mod_tab(adj4)
 tab4$Predictor <- c("Group - Met vs. Placebo","Male vs. Female", "Black vs. Hispanic","Native American vs. Hispanic","Other race/ethnicity vs. Hispanic","Tanner stage 3 vs. stage 2")
  
@@ -165,36 +174,51 @@ Changes in secondary outcomes were also compared between the groups.
 
 Two participants (078-T and 140-T) who did not get randomized were excluded from analysis.  Visits with missing data for insulin sensitivity, insulin secretion, and DI were deleted.  
 
-Changes in variables were calculated as the value at visit 3 minus the value at the first visit.  Any participants without visit 1 and visit 3 were therefore excluded from analysis.
+Changes in variables were calculated as the value at visit 3 minus the value at the first visit.  Any participants with missing values for change in insulin sensitivity, insulin secretion, or DI were excluded from analysis.
 
 The distributions of all variables were examined prior to analysis.  T-tests and chi-square tests were used for unadjusted analyses, and linear models were used for adjusted analyses.
 
 # Results
 
-There were `r N` subjects included in this analysis.  Descriptive statisitcs are shown in Table 1.
+There were `r N` subjects included in this analysis.  Descriptive statistics are shown in Table 1.
 
 ```{r, results='asis',tidy=TRUE, echo=FALSE}
-kable(tab1,caption="Table 1.  Descriptive statistics by study group.")
+kable(tab1,caption="Table 1.  Descriptive statistics by study group.  Variables with a single asterisk were compared using a non-parametric test; variables with two asterisks were compared using Fisher's exact test.")
 ```
 
 There were no differences between the groups in the changes in the primary outcomes, in unadjusted analyses (Table 2).
 
 ```{r, results='asis',tidy=TRUE, echo=FALSE}
-kable(tab_unadjusted,caption="Table 2.  Unadjusted changes in primary outcomes.")
+kable(tab_unadjusted,caption="Table 2a.  Unadjusted changes in primary outcomes.  Variables with a single asterisk were compared using a non-parametric test; variables with two asterisks were compared using Fisher's exact test.")
 ```
 
 There were also no differences between the groups in the changes in the primary outcomes, in analyses adjusted for sex, race/ethnicity, and baseline Tanner stage (Tables 3-5). \
 
 ```{r, results='asis',tidy=TRUE, echo=FALSE}
-kable(tab2,caption="Table 3.  Change in insulin sensitivity, adjusting for sex, race/ethnicity, and baseline Tanner stage.")
+kable(tab2,caption="Table 3a.  Change in insulin sensitivity, adjusting for sex, race/ethnicity, and baseline Tanner stage.")
 ```
 \
 ```{r, results='asis',tidy=TRUE, echo=FALSE}
-kable(tab3,caption="Table 4.  Change in insulin secretion, adjusting for sex, race/ethnicity, and baseline Tanner stage.")
+kable(tab2.lsmeans.group,caption="Table 3b. Least squares means of the change in insulin sensitivity (visit 3-visit 1) by treatment group, in models adjusted for sex, race/ethnicity, and baseline Tanner stage.")
 ```
 \
 ```{r, results='asis',tidy=TRUE, echo=FALSE}
-kable(tab4,caption="Table 5.  Change in DI, adjusting for sex, race/ethnicity, and baseline Tanner stage.")
+kable(tab3,caption="Table 4a.  Change in insulin secretion, adjusting for sex, race/ethnicity, and baseline Tanner stage.")
+```
+\
+```{r, results='asis',tidy=TRUE, echo=FALSE}
+kable(tab3.lsmeans.group,caption="Table 4b. Least squares means of the change in insulin secretion (visit 3-visit 1) by treatment group, in models adjusted for sex, race/ethnicity, and baseline Tanner stage.")
+```
+\
+```{r, results='asis',tidy=TRUE, echo=FALSE}
+kable(tab4,caption="Table 5a.  Change in DI, adjusting for sex, race/ethnicity, and baseline Tanner stage.")
+```
+\
+```{r, results='asis',tidy=TRUE, echo=FALSE}
+kable(tab4.lsmeans.group,caption="Table 5b. Least squares means of the change in DI (visit 3-visit 1) by treatment group, in models adjusted for sex, race/ethnicity, and baseline Tanner stage.")
 ```
 
-
+Table 6 presents the results of the comparisons of changes in secondary outcomes.
+```{r, results='asis',tidy=TRUE, echo=FALSE}
+kable(tab_unadjusted_sec,caption="Table 6.  Changes in secondary outcomes.  Variables with a single asterisk were compared using a non-parametric test; variables with two asterisks were compared using Fisher's exact test.")
+```
