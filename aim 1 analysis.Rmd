@@ -1,7 +1,7 @@
 ---
 title: "Aim 1 HIP study"
 author: "Laura Pyle"
-date: "October 11, 2018"
+date: "`r format(Sys.time(), '%d %B %Y')`"
 output: word_document
 ---
 
@@ -179,6 +179,117 @@ t3 <- t.test(wide$delta_di)
 PValue <- round(c(t1$p.value,t2$p.value,t3$p.value),4)
 tab10 <- cbind(tab10,PValue)
 
+####################################################################################################
+#Predictors of change in insulin secretion #
+####################################################################################################
+
+tab11 <- NULL
+mod1<-lm(delta_inssec~ relevel(as.factor(race_eth), ref="NHW"), wide)
+F.Pval <- round(anova(mod1)$"Pr(>F)"[1],digits=4)
+mod1 <-mod_tab(mod1)
+mod1$PValue <- c(F.Pval,"","","")
+tab11 <- rbind(tab11,mod1)
+mod1<-lm(delta_inssec~ sex.factor, wide)
+mod1 <-mod_tab(mod1)
+tab11 <- rbind(tab11,mod1)
+mod1<-lm(delta_inssec~as.numeric(lept0), wide)
+mod1 <-mod_tab(mod1)
+tab11 <- rbind(tab11,mod1)
+mod1<-lm(delta_inssec~adipo0, wide)
+mod1 <-mod_tab(mod1)
+tab11 <- rbind(tab11,mod1)
+mod1<-lm(delta_inssec~fat_perc0, wide)
+mod1 <-mod_tab(mod1)
+tab11 <- rbind(tab11,mod1)
+mod1<-lm(delta_inssec~crp0, wide)
+mod1 <-mod_tab(mod1)
+tab11 <- rbind(tab11,mod1)
+mod1<-lm(delta_inssec~tg0, wide)
+mod1 <-mod_tab(mod1)
+tab11 <- rbind(tab11,mod1)
+mod1<-lm(delta_inssec~hdl0, wide)
+mod1 <-mod_tab(mod1)
+tab11 <- rbind(tab11,mod1)
+mod1<-lm(delta_inssec~tg_hdl0, wide)
+mod1 <-mod_tab(mod1)
+tab11 <- rbind(tab11,mod1)
+mod1<-lm(delta_inssec~mets0, wide)
+mod1 <-mod_tab(mod1)
+tab11 <- rbind(tab11,mod1)
+mod1<-lm(delta_inssec~dheas0, wide)
+mod1 <-mod_tab(mod1)
+tab11 <- rbind(tab11,mod1)
+mod1<-lm(delta_inssec~igf0, wide)
+mod1 <-mod_tab(mod1)
+tab11 <- rbind(tab11,mod1)
+mod1<-lm(delta_inssec~gluc00, wide)
+mod1 <-mod_tab(mod1)
+tab11 <- rbind(tab11,mod1)
+mod1<-lm(delta_inssec~hba1c0, wide)
+mod1 <-mod_tab(mod1)
+tab11 <- rbind(tab11,mod1)
+mod1<-lm(delta_inssec~famhxt2d0, wide)
+mod1 <-mod_tab(mod1)
+tab11 <- rbind(tab11,mod1)
+tab11$Predictor<-c("Asian","Black","Hispanic","Other race","Male","Baseline leptin","Baseline adiponectin","Baseline % fat","Baseline CRP","Baseline TG",
+                  "Baseline HDL","Baseline TG:HDL","Baseline mets","Baseline DHEAS","Baseline IGF","Baseline fasting glucose","Baseline HbA1c","Family hx T2D")
+
+
+####################################################################################################
+#Predictors of change in odi #
+####################################################################################################
+
+tab12 <- NULL
+mod1<-lm(delta_di~ relevel(as.factor(race_eth), ref="NHW"), wide)
+F.Pval <- round(anova(mod1)$"Pr(>F)"[1],digits=4)
+mod1 <-mod_tab(mod1)
+mod1$PValue <- c(F.Pval,"","","")
+tab12 <- rbind(tab12,mod1)
+mod1<-lm(delta_di~ sex.factor, wide)
+mod1 <-mod_tab(mod1)
+tab12 <- rbind(tab12,mod1)
+mod1<-lm(delta_di~as.numeric(lept0), wide)
+mod1 <-mod_tab(mod1)
+tab12 <- rbind(tab12,mod1)
+mod1<-lm(delta_di~adipo0, wide)
+mod1 <-mod_tab(mod1)
+tab12 <- rbind(tab12,mod1)
+mod1<-lm(delta_di~fat_perc0, wide)
+mod1 <-mod_tab(mod1)
+tab12 <- rbind(tab12,mod1)
+mod1<-lm(delta_di~crp0, wide)
+mod1 <-mod_tab(mod1)
+tab12 <- rbind(tab12,mod1)
+mod1<-lm(delta_di~tg0, wide)
+mod1 <-mod_tab(mod1)
+tab12 <- rbind(tab12,mod1)
+mod1<-lm(delta_di~hdl0, wide)
+mod1 <-mod_tab(mod1)
+tab12 <- rbind(tab12,mod1)
+mod1<-lm(delta_di~tg_hdl0, wide)
+mod1 <-mod_tab(mod1)
+tab12 <- rbind(tab12,mod1)
+mod1<-lm(delta_di~mets0, wide)
+mod1 <-mod_tab(mod1)
+tab12 <- rbind(tab12,mod1)
+mod1<-lm(delta_di~dheas0, wide)
+mod1 <-mod_tab(mod1)
+tab12 <- rbind(tab12,mod1)
+mod1<-lm(delta_di~igf0, wide)
+mod1 <-mod_tab(mod1)
+tab12 <- rbind(tab12,mod1)
+mod1<-lm(delta_di~gluc00, wide)
+mod1 <-mod_tab(mod1)
+tab12 <- rbind(tab12,mod1)
+mod1<-lm(delta_di~hba1c0, wide)
+mod1 <-mod_tab(mod1)
+tab12 <- rbind(tab12,mod1)
+mod1<-lm(delta_di~famhxt2d0, wide)
+mod1 <-mod_tab(mod1)
+tab12 <- rbind(tab12,mod1)
+tab12$Predictor<-c("Asian","Black","Hispanic","Other race","Male","Baseline leptin","Baseline adiponectin","Baseline % fat","Baseline CRP","Baseline TG",
+                  "Baseline HDL","Baseline TG:HDL","Baseline mets","Baseline DHEAS","Baseline IGF","Baseline fasting glucose","Baseline HbA1c","Family hx T2D")
+
 ```
 
 # Background
@@ -248,3 +359,14 @@ Table 10 gives summary statistics for changes in the primary outcomes.
 kable(tab10,caption="Table 10.  Changes in insulin sensitivity, insulin secretion, and disposition index.")
 ```
 
+Table 11 presents the associations between baseline predictors and change in insulin secretion.
+
+```{r, results='asis',tidy=TRUE, echo=FALSE}
+kable(tab11,caption="Table 11.  Associations between baseline predictors and change in insulin secretion.")
+```
+
+Table 12 presents the associations between baseline predictors and change in DI.
+
+```{r, results='asis',tidy=TRUE, echo=FALSE}
+kable(tab11,caption="Table 12.  Associations between baseline predictors and change in DI.")
+```
