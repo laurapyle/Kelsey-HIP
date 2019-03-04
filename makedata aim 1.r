@@ -1,4 +1,5 @@
-setwd("H:\\Endocrinology\\Kelsey\\Kesley HIP study ISS puberty\\Ergui poster\\Data for models")
+#setwd("H:\\Endocrinology\\Kelsey\\Kesley HIP study ISS puberty\\Ergui poster\\Data for models")
+setwd("H:\\Endocrinology\\Kelsey\\Kesley HIP study ISS puberty\\Final dataset cleaning\\Aim 1")
 
 library(tidyr)
 library(reshape2)
@@ -200,7 +201,7 @@ levels(data$type_visit_urine.factor)=c("IVGTT","Exam")
 levels(data$urine_labs_complete.factor)=c("Incomplete","Unverified","Complete")
 
 # add randomization dat
-rand <- read.csv("H:\\Endocrinology\\Kelsey\\Kesley HIP study ISS puberty\\Ergui poster\\Randomization\\HIP Study Randomization Schema.csv")
+rand <- read.csv("H:\\Endocrinology\\Kelsey\\Kesley HIP study ISS puberty\\Final dataset cleaning\\Randomization\\HIP Study Randomization Schema.csv")
 names(rand)[1] <- "hip_id_screen"
 final <- merge(data,rand,by=c("hip_id_screen"),all.x=TRUE, all.y=TRUE)
 check <- c("hip_id_screen","Randomization.Group","redcap_event_name")

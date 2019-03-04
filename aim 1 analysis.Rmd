@@ -39,7 +39,7 @@ source(file='C:\\Users\\pylell\\Documents\\GitHub\\Functions\\01_functions.r')
 
 N <- nrow(distinct(wide,hip_id_screen))
 
-
+source("C:\\Users\\pylell\\Documents\\GitHub\\General-code\\temp_table1.r")
 
 ####################################################################################################
 #Unadjusted models #

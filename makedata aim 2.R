@@ -1,6 +1,7 @@
 #setwd("H:\\Endocrinology\\Kelsey\\Kesley HIP study ISS puberty\\Ergui poster\\Data for models")
 #setwd("C:\\Temp\\Nashville trip\\Kesley HIP study ISS puberty\\Ergui poster\\Data for models")
-setwd("C:\\Temp\\Nashville trip\\Kesley HIP study ISS puberty\\Final dataset cleaning")
+#setwd("C:\\Temp\\Nashville trip\\Kesley HIP study ISS puberty\\Final dataset cleaning")
+setwd("H:\\Endocrinology\\Kelsey\\Kesley HIP study ISS puberty\\Final dataset cleaning")
 
 library(tidyr)
 library(reshape2)
@@ -205,7 +206,9 @@ units(data$lean_percentage_dexa)="%"
 # 
 # add randomization dat
 #rand <- read.csv("H:\\Endocrinology\\Kelsey\\Kesley HIP study ISS puberty\\Ergui poster\\Randomization\\HIP Study Randomization Schema.csv")
-rand <- read.csv("C:\\Temp\\Nashville trip\\Kesley HIP study ISS puberty\\Ergui poster\\Randomization\\HIP Study Randomization Schema.csv")
+#rand <- read.csv("C:\\Temp\\Nashville trip\\Kesley HIP study ISS puberty\\Ergui poster\\Randomization\\HIP Study Randomization Schema.csv")
+rand <- read.csv("H:\\Endocrinology\\Kelsey\\Kesley HIP study ISS puberty\\Final dataset cleaning\\Randomization\\HIP Study Randomization Schema.csv")
+
 names(rand)[1] <- "hip_id_screen"
 final <- merge(data,rand,by=c("hip_id_screen"),all.x=TRUE, all.y=TRUE)
 check <- c("hip_id_screen","Randomization.Group","redcap_event_name")
